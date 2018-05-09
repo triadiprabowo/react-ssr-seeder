@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addStatement } from './actions/statement.action';
 
-class Grid extends Component {
+class ManualFormComponent extends Component {
 	constructor(props) {
 		super(props)
 
