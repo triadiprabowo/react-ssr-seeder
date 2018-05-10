@@ -5,7 +5,7 @@ export function getBank(dispatch) {
 
   return fetch(encodedURI)
 	.then((data) => data.json())
-	.then((repos) => dispatch({ type: 'GET_BANK', payload: data.result }))
+	.then((data) => data.result)
 	.catch((error) => {
 		console.warn(error)
 		return null

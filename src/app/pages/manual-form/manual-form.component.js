@@ -85,4 +85,4 @@ function mapDispatchToProps(dispatch) {
 	return bindActionCreators({ addStatement: addStatement }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Grid)
+export default connect(mapStateToProps, mapDispatchToProps)(ManualFormComponent)

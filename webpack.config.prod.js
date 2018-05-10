@@ -15,9 +15,9 @@ var browserConfig = {
 		]
 	},
 	plugins: [
-	new webpack.DefinePlugin({
-		__isBrowser__: "true"
-	})
+		new webpack.DefinePlugin({
+			__isBrowser__: "true"
+		})
 	]
 }
 

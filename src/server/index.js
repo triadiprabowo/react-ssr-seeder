@@ -4,30 +4,32 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter, matchPath } from "react-router-dom";
 import serialize from "serialize-javascript";
-import App from '../shared/App';
-import routes from '../shared/routes';
+import Main from '../Main';
+import routes from '../app/routes';
 import { Provider } from 'react-redux';
-import store from '../shared/store';
+import store from '../app/store';
+import compression from 'compression';
 
 const app = express()
 
+app.use(compression({ level: 9}));
 app.use(cors())
-app.use(express.static("public"))
+app.use('/public', express.static("public"))
 
 app.get("*", (req, res, next) => {
 	const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
 
-	const promise = activeRoute.fetchInitialData
-		? activeRoute.fetchInitialData(req.path)
+	const promise = activeRoute.onInit
+		? activeRoute.onInit(store.dispatch)
 		: Promise.resolve()
 
 	promise.then((data) => {
-		const context = { data }
+		const state = JSON.stringify(store.getState()).replace(/</g, '\\u003c');
 
 		const markup = renderToString(
 			<Provider store={store}>
-				<StaticRouter location={req.url} context={context}>				
-					<App />
+				<StaticRouter location={req.url} context={store.getState()}>
+					<Main initialState={state} />
 				</StaticRouter>
 			</Provider>
 		);
@@ -36,17 +38,18 @@ app.get("*", (req, res, next) => {
 			<!DOCTYPE html>
 			<html>
 				<head>
-					<title>SSR with RR</title>
-					<script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
+					<title>${activeRoute.title || 'TP React SSR'}</title>
+					<meta name="description" content="${activeRoute.description}">
+
 					<script>
-						window.__PRELOADED_STATE__ = ${JSON.stringify(store.getState()).replace(/</g, '\\u003c')}
+						window.__PRELOADED_STATE__ = ${state}
 					</script>
 				</head>
 
 				<body>
 					<div id="app">${markup}</div>
 
-					<script src="/bundle.js" defer></script>
+					<script src="/public/bundle.js" async defer></script>
 				</body>
 			</html>
 		`)
@@ -55,11 +58,4 @@ app.get("*", (req, res, next) => {
 
 app.listen(3000, () => {
 	console.log(`Server is listening on port: 3000`)
-})
-
-/*
-  1) Just get shared App rendering to string on server then taking over on client.
-  2) Pass data to <App /> on server. Show diff. Add data to window then pick it up on the client too.
-  3) Instead of static data move to dynamic data (github gists)
-  4) add in routing.
-*/
+});
