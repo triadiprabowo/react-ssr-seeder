@@ -1,0 +1,35 @@
+@import '../base/_variables';
+
+.table {
+	position: relative;
+	display: table;
+	border-collapse: collapse;
+	width: 100%;
+
+	thead th {
+		padding: 10px;
+	}
+
+	tbody td {
+		padding: 10px
+	}
+
+	&.table--bordered {
+		th {
+			border: 1px solid #ccc;
+			text-align: left;
+			font-size: 16px;
+		}
+
+		td {
+			border: 1px solid #ccc;
+			font-size: 13px;
+		}
+	}
+
+	&.table--odd-even {
+		tr:nth-child(odd) {
+			background-color: #eaeaea;
+		}
+	}
+}

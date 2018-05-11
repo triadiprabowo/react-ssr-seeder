@@ -1,0 +1,12 @@
+@import '_variables';
+
+* {
+	font-family: sans-serif;
+	font-size: $base_font_size;
+}
+
+body {
+	position: relative;
+	overflow-x: hidden;
+	background-color: $base_body_bg;
+}

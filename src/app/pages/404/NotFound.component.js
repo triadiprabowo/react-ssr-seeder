@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function NoMatch () {
-  return (
-    <div>
-      Four Oh Four
-    </div>
-  )
+export default class NotFoundComponent extends React.Component {
+	render() {
+		return (
+			<h1>404 Not Found</h1>
+		);
+	}
 }

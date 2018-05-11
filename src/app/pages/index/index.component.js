@@ -17,32 +17,46 @@ class IndexComponent extends Component {
 			initialState = this.props.staticContext['IndexReducer'];
 		}
 
-		this.state = { ...initialState }
+		this.state = { ...initialState };
+	}
+
+	componentWillMount() {
+		this.props.getBank();
 	}
 
 	render() {
 		const { banks, isFetching, initialFetching } = this.state;
 
 		if(initialFetching) {
-			return <p>Loading</p>
+			return <p>Loading...</p>
 		}
 
 		return (
-			<ul style={{display: 'flex', flexWrap: 'wrap'}}>
+			<table className={'table table--bordered table--odd-even'}>
+				<thead>
+					<tr>
+						<th>Code</th>
+						<th>Name</th>
+					</tr>
+				</thead>
+
+				<tbody>
 				{banks.map(({ id, code, name}) => (
-					<li key={id} style={{margin: 30}}>
-						<ul>
-							<li>{name} {code}</li>
-						</ul>
-					</li>
+					<tr key={id}>
+						<td>{code}</td>
+						<td>{name}</td>
+					</tr>
 				))}
-			</ul>
+				</tbody>
+			</table>
 		)
 	}
 }
 
 function mapStateToProps(state, props) {
-	return { IndexReducer: props.initialState['IndexReducer'] };
+	return {
+		IndexReducer: state['IndexReducer']
+	}
 }
 
 function mapDispatchToProps(dispatch) {
