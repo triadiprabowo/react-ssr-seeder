@@ -53,13 +53,14 @@ var plugins = [
 
 var browserConfig = {
 	entry: {
+		polyfills: ['./src/polyfills.js'],
 		main: ['./src/browser/index.js'],
 		styles: ['./src/style.scss']
 	},
 	output: {
-		path: path.resolve(__dirname, 'public'),
+		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].bundle.js',
-		publicPath: '/public'
+		chunkFilename: '[id].chunk.js'
 	},
 	module: {
 		rules: [
@@ -204,7 +205,8 @@ var serverConfig = {
 	plugins: [
 		new webpack.DefinePlugin({
 			__isBrowser__: "false"
-		})
+		}),
+		new ProgressPlugin()
 	]
 }
 

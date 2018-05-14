@@ -6,6 +6,12 @@ const postcssUrl = require('postcss-url');
 const CompressionPlugin = require('compression-webpack-plugin');
 const cssnano = require('cssnano');
 const autoprefixer = require('autoprefixer');
+const BaseHrefPlugin = require('base-href-webpack-plugin').BaseHrefWebpackPlugin;
+
+// config contant
+const baseHref = "";
+const deployUrl = "";
+const entryPoints = ["polyfills", "styles", "main"];
 
 const postcssPlugins = function () {
 	// safe settings based on: https://github.com/ben-eb/cssnano/issues/358#issuecomment-283696193
@@ -48,6 +54,7 @@ var plugins = [
 	new webpack.DefinePlugin({
 		__isBrowser__: "true"
 	}),
+	new BaseHrefPlugin({}),
 	new ProgressPlugin(),
 	new webpack.optimize.UglifyJsPlugin({ 
 		mangle: false, 
@@ -62,24 +69,19 @@ var plugins = [
 	}),
 	new webpack.NoEmitOnErrorsPlugin(),
 	new webpack.optimize.AggressiveMergingPlugin(),
-	new CompressionPlugin({
-		asset: "[path].gz[query]",
-		algorithm: "gzip",
-		test: /\.js$|\.styl$|\.css$|\.html$|\.scss$/,
-		threshold: 10240,
-		minRatio: 0
-	})
+	new CompressionPlugin()
 ]
 
 var browserConfig = {
 	entry: {
+		polyfills: ['./src/polyfills.js'],
 		main: ['./src/browser/index.js'],
 		styles: ['./src/style.scss']
 	},
 	output: {
-		path: path.resolve(__dirname, 'public'),
+		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].bundle.js',
-		publicPath: '/public'
+		chunkFilename: '[id].chunk.js'
 	},
 	module: {
 		rules: [
@@ -224,7 +226,8 @@ var serverConfig = {
 	plugins: [
 		new webpack.DefinePlugin({
 			__isBrowser__: "false"
-		})
+		}),
+		new ProgressPlugin()
 	]
 }
 

@@ -10,12 +10,41 @@ import { Provider } from 'react-redux';
 import store from '../app/server.store';
 import compression from 'compression';
 
+/*
+** declare express application
+*/
 const app = express()
 
+/*
+** define express middleware
+*/
 app.use(compression({ level: 9}));
-app.use(cors())
-app.use('/public', express.static("public"));
+app.use(cors());
 
+/*
+** If environment set is production
+** Send gzip version of javascript files
+*/
+if(process.env.NODE_ENV == 'production') {
+	app.get(['*.js'], (req, res, next) => {
+		req.url = `${req.url}.gz`;
+		res.set('Content-Encoding', 'gzip');
+		res.set('Content-Type', 'text/javascript');
+
+		next();
+	});
+}
+
+/*
+** Set dist folder as static folder
+** and public path of /dist
+*/
+app.use('/dist', express.static("dist"));
+
+/*
+** Rendering page
+** get all routes except asset files
+*/
 app.get("*", (req, res, next) => {
 	const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
 	let promise;
@@ -27,7 +56,7 @@ app.get("*", (req, res, next) => {
 	}
 	else {
 		promise = Promise.reject();
-	}	
+	}
 
 	promise.then((data) => {
 		let state;
@@ -63,14 +92,18 @@ app.get("*", (req, res, next) => {
 				<body>
 					<div id="app">${markup}</div>
 
-					<script src="/public/main.bundle.js" defer></script>
-					<script src="/public/styles.bundle.js" async></script>
+					<script src="/dist/polyfills.bundle.js" defer></script>
+					<script src="/dist/main.bundle.js" defer></script>
+					<script src="/dist/styles.bundle.js" async></script>
 				</body>
 			</html>
 		`)
 	}).catch(next);
 });
 
-app.listen(3000, () => {
-	console.log(`Server is listening on port: 3000`)
+/*
+** Listen port based on environment of SERVER_PORT
+*/
+app.listen(process.env.SERVER_PORT, () => {
+	console.log(`Server is listening on port: ${process.env.SERVER_PORT}`)
 });
