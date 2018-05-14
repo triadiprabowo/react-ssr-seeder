@@ -1,5 +1,6 @@
 # React SSR
 ![React SSR](https://img.shields.io/badge/react--ssr-beta-orange.svg) ![Build Success](https://img.shields.io/badge/build-success-green.svg) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)
+
 React server side rendering seeder using ReactDOM/server and Express, state management using React Redux and Redux Thunk. Support initial async process or fetching, unit test using Enzyme and Jest, style pre-processor using SASS / Stylus supported.
 
 ### How-To Install
@@ -66,7 +67,7 @@ import exampleAction from '...';
 Create action within pages folder example `index.action.js`, you may look example at `src/app/pages/index/index.action.js`.
 
 ```javascript
-import Q from 'q;
+import Q from 'q';
 
 export function getData() {
         return (dispatch) => {
